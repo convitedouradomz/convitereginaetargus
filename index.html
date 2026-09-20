@@ -4970,8 +4970,114 @@ window.addEventListener("load", function() {
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const mensagensRef = collection(db, "mensagens-Regina-Trago");
+const mensagensRef = collection(db, "mensagens-Regina-Trago");
 
+  // ===== PRESENTES PARTILHADOS (Firebase) =====
+  const presentesRef = collection(db, "presentes-Regina-Trago");
+  let presentesEscolhidos = {};
+
+  function idPresente(nome) {
+    return nome
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  function escaparHtml(texto) {
+    const div = document.createElement("div");
+    div.textContent = texto;
+    return div.innerHTML;
+  }
+
+  function renderizarListaPresentes() {
+    const categorias = {
+      eletrodomesticos: "categoria-eletrodomesticos",
+      cozinha: "categoria-cozinha",
+      mobilia: "categoria-mobilia"
+    };
+
+    Object.keys(categorias).forEach((cat) => {
+      const container = document.getElementById(categorias[cat]);
+      if (!container) return;
+
+      container.innerHTML = listaPresentesCompleta[cat].map((nome) => {
+        const escolhido = presentesEscolhidos[idPresente(nome)];
+
+        if (escolhido) {
+          return `
+            <div class="item-presente escolhido">
+              <div class="presente-info">
+                <span class="nome-presente-item">${nome}</span>
+                <small class="escolhido-por">Escolhido por: <strong>${escaparHtml(escolhido.nome || "Convidado")}</strong></small>
+              </div>
+            </div>`;
+        }
+
+        return `
+          <div class="item-presente">
+            <span class="nome-presente-item">${nome}</span>
+            <button class="btn-escolher-presente" onclick="escolherPresente('${nome.replace(/'/g, "\\'")}')">🎁 Escolher</button>
+          </div>`;
+      }).join("");
+    });
+  }
+  window.renderizarListaPresentes = renderizarListaPresentes;
+
+  function carregarPresentesFirebase() {
+    onSnapshot(presentesRef, (snapshot) => {
+      presentesEscolhidos = {};
+      snapshot.forEach((docSnap) => {
+        presentesEscolhidos[docSnap.id] = docSnap.data();
+      });
+      renderizarListaPresentes();
+    });
+  }
+
+  window.escolherPresente = async function (nomePresente) {
+    if (localStorage.getItem("presenteEscolhidoReginaTrago") === "true") {
+      alert("❌ Você já escolheu um presente! Cada convidado escolhe apenas 1.");
+      return;
+    }
+
+    const nome = prompt(
+      `🎁 Escolheu: ${nomePresente}\n\nPor favor, escreva o seu nome para confirmar este presente:`
+    );
+
+    if (!nome || !nome.trim()) {
+      alert("⚠️ É obrigatório indicar o seu nome para escolher este presente.");
+      return;
+    }
+
+    if (!confirm(`${nome.trim()}, confirma que deseja oferecer:\n\n${nomePresente}?`)) return;
+
+    try {
+      const presenteDocRef = doc(db, "presentes-Regina-Trago", idPresente(nomePresente));
+
+      await runTransaction(db, async (transaction) => {
+        const docSnap = await transaction.get(presenteDocRef);
+        if (docSnap.exists()) {
+          throw new Error("Já escolhido");
+        }
+        transaction.set(presenteDocRef, {
+          nome: nome.trim(),
+          presente: nomePresente,
+          timestamp: Date.now()
+        });
+      });
+
+      localStorage.setItem("presenteEscolhidoReginaTrago", "true");
+      alert(`✅ Obrigado, ${nome.trim()}! Você escolheu: ${nomePresente}. ❤️`);
+    } catch (err) {
+      if (err.message === "Já escolhido") {
+        alert("❌ Este presente acabou de ser escolhido por outro convidado. Por favor escolha outro.");
+      } else {
+        alert("❌ Não foi possível guardar o presente. Tente novamente.");
+      }
+      console.error(err);
+    }
+  };
   function criarCard(msg, index) {
     return `
       <div class="mensagem-card" style="animation-delay:${index * 0.15}s">
@@ -5117,7 +5223,7 @@ window.fecharLojas = function() {
     top: 56% !important;
   }
 }
-/* CARDS DAS LOJAS SUGERIDAS */
+.item-presente.escolhido {   text-decoration: none !important;   opacity: 0.85; } .presente-info {   display: flex;   flex-direction: column;   align-items: flex-start;   gap: 4px; } .escolhido-por {   display: block;   font-size: 0.95rem;   color: #666; } .escolhido-por strong {   color: var(--verde-oliva);   font-weight: 700; } /* CARDS DAS LOJAS SUGERIDAS */
 .card-loja {
   background: #f2f2f2;
   border-radius: 16px;
