@@ -4639,7 +4639,7 @@ document
     }
   });
 
-// Inicializar renderização se o container estiver visível
+ renderização se o container estiver visível
 if (
   document.getElementById("listaPresentesContainer") &&
   document.getElementById("listaPresentesContainer").style.display !== "none"
@@ -5154,6 +5154,7 @@ const mensagensRef = collection(db, "mensagens-Regina-Trago");
   // Inicializar
   window.addEventListener("load", function() {
     carregarMensagens();
+    carregarPresentesFirebase();
   });
 
   
@@ -5757,6 +5758,14 @@ window.fecharLojas = function() {
     letter-spacing: 2px;
   }
 }
+.item-presente.escolhido .nome-presente-item {
+  text-decoration: line-through !important;
+  text-decoration-thickness: 2px;
+  color: #888;
+}
+.item-presente.escolhido .escolhido-por {
+  text-decoration: none !important;
+}  
 </style>
 
 <script>
