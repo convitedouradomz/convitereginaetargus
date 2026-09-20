@@ -3696,7 +3696,7 @@ body:has(#capa:not(.oculto)) #botaoMusica {
     <h2>Sugestões de Presentes</h2>
     <p style="font-size: 1.3rem; color: var(--cinza-medio); max-width: 700px; margin: 0 auto 30px;">
       Queridos convidados, a vossa presença é o nosso maior presente.<br />
-     Preparamos essa pequena lista de presentes para quem quer nos presentear com algo do nosso agrado, caso tenham outras opções sintam-se a vontade para ofertar
+     Preparamos essa pequena lista de presentes para quem quer nos presentear com algo do nosso agrado, caso tenham outras opções sintam-se à vontade. para ofertar
     </p>
 
     <!-- OPÇÕES: Lojas ou Presente Monetário -->
@@ -3706,6 +3706,10 @@ body:has(#capa:not(.oculto)) #botaoMusica {
     Lista de Presentes
   </button>
  
+ <button class="btn-presente-elegante" id="btnPresenteMonetario">
+    <i class="fas fa-gift"></i>
+    Presente Monetário
+  </button>
   <button class="btn-presente-elegante" id="btnLojasSugeridas" style="background: linear-gradient(135deg, var(--creme-claro), white); color: var(--verde-oliva);">
     <i class="fas fa-store"></i>
     Lojas Sugeridas
@@ -3771,7 +3775,7 @@ body:has(#capa:not(.oculto)) #botaoMusica {
     <i class="fas fa-exclamation-triangle"></i> Cada convidado pode escolher apenas 1 presente. Depois de escolhido, não é possível trocar ou escolher outro.
   </div>
   <p style="text-align:center; font-style:italic; color: var(--cinza-medio); font-size: 1rem; margin: -10px 0 25px;">
-    <strong>Estas são apenas algumas sugestões, sintam-se a vontade para ver outros presentes</strong>
+    <strong>Estas são apenas algumas sugestões, sintam-se à vontade. para ver outros presentes</strong>
   </p>
     <div style="margin-bottom: 30px;">
   <h3 class="titulo-categoria" style="font-family: 'Playfair Display', serif; border-bottom: 2px solid #bbb; padding-bottom: 10px; margin-bottom: 15px;">
@@ -3830,7 +3834,7 @@ body:has(#capa:not(.oculto)) #botaoMusica {
         </div>
         <p style="margin: 0;">
           <strong style="color: white; font-size: 1rem;">Seja pontual</strong><br>
-          <span style="color: white; font-size: 0.9rem;">A cerimónia começa às 10h30</span>
+          <span style="color: white; font-size: 0.9rem;">A cerimónia começa às 10:00</span>
         </p>
       </div>
       
@@ -3888,7 +3892,41 @@ body:has(#capa:not(.oculto)) #botaoMusica {
       <span class="fechar-modal-elegante" onclick="fecharModal()">&times;</span>
       <img class="modal-img-elegante" id="imagemModal" src="" alt="" />
     </div>
+<!-- MODAL PRESENTE MONETÁRIO -->
+<div id="modalPresenteMonetario" class="modal-presente-elegante">
+  <span class="fechar-modal-presente-elegante" onclick="fecharModalPresente('modalPresenteMonetario')">&times;</span>
+  <h3>Presente Monetário</h3>
+  <div class="info-pagamento-elegante">
 
+    <div class="metodo-pagamento-elegante">
+      <img src="mpesa.png" alt="M-Pesa" style="width: 45px; height: auto; margin-right: 18px;" />
+      <div>
+        <strong style="font-size: 1.2rem">M-Pesa</strong><br />
+        <span style="font-size: 1.1rem">+258 84 7972560</span><br />
+        <em style="color: var(--cinza-medio)">(Titular: Regina Jonas)</em>
+      </div>
+    </div>
+
+    <div class="metodo-pagamento-elegante">
+      <img src="emola.png" alt="E-Mola" style="width: 45px; height: auto; margin-right: 18px;" />
+      <div>
+        <strong style="font-size: 1.2rem">E-Mola</strong><br />
+        <span style="font-size: 1.1rem">+258 87 4463220</span><br />
+        <em style="color: var(--cinza-medio)">(Titular: Trago Martins)</em>
+      </div>
+    </div>
+
+    <div class="metodo-pagamento-elegante">
+      <img src="Bim.png" alt="Millennium BIM" style="width: 45px; height: auto; margin-right: 18px;" />
+      <div>
+        <strong style="font-size: 1.2rem">Millennium BIM</strong><br />
+        <span style="font-size: 1rem"><strong>Número de Conta:</strong> 378859691</span><br />
+        <em style="color: var(--cinza-medio)">(Titular: Regina Jonas)</em>
+      </div>
+    </div>
+
+  </div>
+</div>
    
     <!-- POPUP MENSAGEM ENVIADA -->
     <div id="popupMensagem" class="popup-mensagem-elegante">
@@ -4325,9 +4363,12 @@ function iniciarObservadorAgenda() {
 
 
       // Modais de presentes
-      document
-        .addEventListener("click", function () {
-        });
+     document
+  .getElementById("btnPresenteMonetario")
+  ?.addEventListener("click", function () {
+    document.getElementById("listaPresentesContainer").style.display = "none";
+    abrirModalPresente("modalPresenteMonetario");
+  });
 
       function abrirModalPresente(idModal) {
         const modal = document.getElementById(idModal);
@@ -4512,7 +4553,7 @@ function iniciarObservadorAgenda() {
 const listaPresentesCompleta = {
   eletrodomesticos: [
     "TV 50 polegadas em diante", "Congelador", "Máquina de lavar",
-    "Air fryer", "Microondas", "Grelhador elétrico", "Engomadeira"
+    "Air fryer", "Microondas", "Grelhador elétrico", "Engomadeira", "Liquidificador"
   ],
   cozinha: [
     "Jogo de panelas anti-aderentes", "Jogo de loiça (preferência branco)",
@@ -5029,7 +5070,7 @@ if (btnConfirmar) {
     const status = statusSelecionado ? statusSelecionado.value : "Sim, estarei presente";
     
     // Mensagem personalizada com nome e status
-    const mensagem = `Olá, eu ${nome} - ${status} no vosso casamento  Regina e Trago, no dia 12 de Dezembro de 2026.`;
+    const mensagem = `Olá, eu ${nome} - ${status} no vosso casamento  Regina e Trago, no dia 19 de Dezembro de 2026.`;
     const url = `https://wa.me/258847972560?text=${encodeURIComponent(mensagem)}`;
     
     window.open(url, '_blank');
