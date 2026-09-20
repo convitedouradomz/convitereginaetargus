@@ -4957,8 +4957,7 @@ window.addEventListener("load", function() {
   <!-- FIREBASE (APENAS MENSAGENS) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyAsXcP98tL4l8REoZdGJtgC2w0oAMDxRcs",
     authDomain: "casamentodoedmilsonefarida.firebaseapp.com",
